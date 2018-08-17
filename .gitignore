@@ -15,7 +15,7 @@
 *.iws
 
 # web application files
-web-app/WEB-INF/classes
+#web-app/WEB-INF/classes
 
 # "temporary" build files
 /target

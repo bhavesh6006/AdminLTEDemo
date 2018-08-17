@@ -19,6 +19,11 @@ class MasterController {
         [title : "City"]
     }
 
+    @Secured(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'])
+    def party() {
+        [title : "Party"]
+    }
+
     /**
      * Function used for fetch all Vehicle Types
      */
@@ -125,6 +130,61 @@ class MasterController {
         ServiceContext sCtx = sessionUtilService.fetchServiceContext(request)
 
         Map responseMap = masterManagementService.fetchCityDetailsById(sCtx, inputParams)
+
+        render(responseMap as JSON)
+    }
+
+    /**
+     * Function used for fetch all Parties
+     */
+    @Secured(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'])
+    def fetchAllParties() {
+
+        log.info "===== fetchAllParties ====="
+
+        Map inputParams  = (request.JSON) ?: params
+
+        Map responseMap = masterManagementService.fetchAllParties(inputParams)
+
+        // Paginate the response
+        Map paginatedResponseMap = [
+                recordsTotal    : (responseMap?.totalCount) ?: 0,
+                recordsFiltered : (responseMap?.totalCount) ?: 0,
+                data            : (responseMap?.dataList) ?:[],
+                sStart          : inputParams.start
+        ]
+
+        render paginatedResponseMap as JSON
+    }
+
+    /**
+     * Function used for Party CRUD
+     */
+    @Secured(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'])
+    def partyCRUD() {
+
+        log.info "===== partyCRUD ====="
+
+        Map inputParams = (request.JSON) ?: params
+        ServiceContext sCtx = sessionUtilService.fetchServiceContext(request)
+
+        Map responseMap = masterManagementService.partyCRUD(sCtx, inputParams)
+
+        render(responseMap as JSON)
+    }
+
+    /**
+     * Function used for fetch details of Party by id
+     */
+    @Secured(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN'])
+    def fetchPartyDetailsById() {
+
+        log.info "===== fetchPartyDetailsById ====="
+
+        Map inputParams = (request.JSON) ?: params
+        ServiceContext sCtx = sessionUtilService.fetchServiceContext(request)
+
+        Map responseMap = masterManagementService.fetchPartyDetailsById(sCtx, inputParams)
 
         render(responseMap as JSON)
     }

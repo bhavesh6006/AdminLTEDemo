@@ -1,6 +1,7 @@
 package com
 
 import com.master.City
+import com.master.Party
 import com.master.VehicleType
 import com.util.CodeConstants
 import com.util.ServiceContext
@@ -250,6 +251,135 @@ class MasterManagementService {
 
         } catch (Exception e) {
             log.info("Exception ::: Service -> MasterManagementService ::: Method -> fetchCityDetailsById ::: " + e.printStackTrace())
+        }
+
+        return responseMap
+    }
+
+    /**
+     * Method to fetch all Parties
+     *
+     * @param paginationDetails     Pagination start index and users role
+     * @return                      Response map with List of Parties and total records found
+     */
+    Map fetchAllParties(Map params) {
+
+        Map responseMap = [userList: [], totalCount: 0]
+
+        try {
+            def partyList = Party.createCriteria().list(max: CodeConstants.NUMBER_OF_RECORDS_PER_PAGE_IN_DATA_TABLE, offset: params?.start) {
+
+                if (params.searchByPartyName) {
+                    like("name", '%' + params.searchByPartyName + '%')
+                }
+
+                if (params.columnName) {
+                    order(params.columnName, params.order)
+                } else {
+                    order("id", "desc")
+                }
+
+                eq("isDeleted", false)
+
+                setReadOnly true
+            }
+
+            responseMap = [dataList: partyList*.toMap(), totalCount: partyList.totalCount]
+
+        } catch (Exception e) {
+            log.info("Exception ::: Service -> MasterManagementService ::: Method -> fetchAllParties ::: " + e.printStackTrace())
+        }
+
+        return responseMap
+    }
+
+    /**
+     * Method to Party CRUD
+     *
+     * @param sCtx      ServiceContext
+     * @param params    Input params
+     * @return          Response map with appropriate status and message
+     */
+    Map partyCRUD(ServiceContext sCtx, Map params) {
+
+        Map responseMap = [(CodeConstants.RESPONSE_STATUS): false, (CodeConstants.RESPONSE_MESSAGE): "Something went wrong. Please try again."]
+
+        try {
+
+            Party party = null
+            def savedData = null
+
+            switch (params.CRUD_MODE) {
+                case "ADD":
+                    party = new Party()
+                    party.name          = params.name
+                    party.address       = params.address
+                    party.contactNumber = params.contactNumber
+                    party.email         = params.email
+                    party.createdBy     = sCtx.id
+
+                    savedData = party.save(flush: true)
+
+                    if (savedData) {
+                        responseMap = [(CodeConstants.RESPONSE_STATUS): true, (CodeConstants.RESPONSE_MESSAGE): "Party has been saved successfully."]
+                    }
+                    break
+
+                case "UPDATE":
+                    party = Party.findById(params.id as Long)
+                    party.name          = params.name
+                    party.address       = params.address
+                    party.contactNumber = params.contactNumber
+                    party.email         = params.email
+                    party.updatedBy     = sCtx.id
+
+                    savedData = party.save(flush: true)
+
+                    if (savedData) {
+                        responseMap = [(CodeConstants.RESPONSE_STATUS): true, (CodeConstants.RESPONSE_MESSAGE): "Party has been updated successfully."]
+                    }
+                    break
+
+                case "DELETE":
+                    party = Party.findById(params.id as Long)
+                    party.isDeleted = true
+                    party.updatedBy = sCtx.id
+
+                    savedData = party.save(flush: true)
+
+                    if (savedData) {
+                        responseMap = [(CodeConstants.RESPONSE_STATUS): true, (CodeConstants.RESPONSE_MESSAGE): "Party has been deleted successfully."]
+                    }
+                    break
+            }
+        } catch (Exception e) {
+            log.info("Exception ::: Service -> MasterManagementService ::: Method -> partyCRUD ::: " + e.printStackTrace())
+        }
+
+        return responseMap
+    }
+
+    /**
+     * Method to fetch details of Party by id
+     *
+     * @param sCtx      ServiceContext
+     * @param params    Input params
+     * @return          Response map with appropriate status and details
+     */
+    Map fetchPartyDetailsById(ServiceContext sCtx, Map params) {
+
+        Map responseMap = [(CodeConstants.RESPONSE_STATUS): false, data: []]
+
+        try {
+
+            def partyData = Party.findById(params.id as Long)
+
+            if (partyData) {
+                responseMap = [(CodeConstants.RESPONSE_STATUS): false, data: partyData.toMap()]
+            }
+
+        } catch (Exception e) {
+            log.info("Exception ::: Service -> MasterManagementService ::: Method -> fetchPartyDetailsById ::: " + e.printStackTrace())
         }
 
         return responseMap

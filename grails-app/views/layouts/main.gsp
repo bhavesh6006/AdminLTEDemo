@@ -61,6 +61,7 @@
                 <li id="dashboard"><a href="<%=request.getContextPath()%>/user/home"><i class="fa fa-tachometer" aria-hidden="true"></i> <span>Dashboard</span></a></li>
                 <li id="vehicleType"><a href="<%=request.getContextPath()%>/master/vehicleType"><i class="fa fa-tachometer" aria-hidden="true"></i> <span>Vehicle Type</span></a></li>
                 <li id="city"><a href="<%=request.getContextPath()%>/master/city"><i class="fa fa-tachometer" aria-hidden="true"></i> <span>City</span></a></li>
+                <li id="party"><a href="<%=request.getContextPath()%>/master/party"><i class="fa fa-tachometer" aria-hidden="true"></i> <span>Party</span></a></li>
                 <li id="logout"><a href="javaScript:void(0)"><i class="fa fa-sign-out" aria-hidden="true"></i> <span>Sign Out</span></a></li>
 
             </ul>

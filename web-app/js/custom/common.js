@@ -324,7 +324,11 @@ var ajaxURLs = {
 
     fetchAllCities                              : "master/fetchAllCities",
     cityCRUD                                    : "master/cityCRUD",
-    fetchCityDetailsById                        : "master/fetchCityDetailsById"
+    fetchCityDetailsById                        : "master/fetchCityDetailsById",
+
+    fetchAllParties                             : "master/fetchAllParties",
+    partyCRUD                                   : "master/partyCRUD",
+    fetchPartyDetailsById                       : "master/fetchPartyDetailsById"
 };
 
 var codeConstant = {
