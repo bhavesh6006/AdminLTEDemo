@@ -1,5 +1,6 @@
 package com
 
+import com.master.City
 import com.master.VehicleType
 import com.util.CodeConstants
 import com.util.ServiceContext
@@ -9,7 +10,7 @@ import grails.transaction.Transactional
 class MasterManagementService {
 
     /**
-     * Method to fetch all users with given role
+     * Method to fetch all Vehicle Types
      *
      * @param paginationDetails     Pagination start index and users role
      * @return                      Response map with List of Vehicle Types and total records found
@@ -126,6 +127,129 @@ class MasterManagementService {
 
         } catch (Exception e) {
             log.info("Exception ::: Service -> MasterManagementService ::: Method -> fetchVehicleTypeDetailsById ::: " + e.printStackTrace())
+        }
+
+        return responseMap
+    }
+
+    /**
+     * Method to fetch all Cities
+     *
+     * @param paginationDetails     Pagination start index and users role
+     * @return                      Response map with List of Cities and total records found
+     */
+    Map fetchAllCities(Map params) {
+
+        Map responseMap = [userList: [], totalCount: 0]
+
+        try {
+            def cityList = City.createCriteria().list(max: CodeConstants.NUMBER_OF_RECORDS_PER_PAGE_IN_DATA_TABLE, offset: params?.start) {
+
+                if (params.searchByCity) {
+                    like("name", '%' + params.searchByCity + '%')
+                }
+
+                if (params.columnName) {
+                    order(params.columnName, params.order)
+                } else {
+                    order("id", "desc")
+                }
+
+                eq("isDeleted", false)
+
+                setReadOnly true
+            }
+
+            responseMap = [dataList: cityList*.toMap(), totalCount: cityList.totalCount]
+
+        } catch (Exception e) {
+            log.info("Exception ::: Service -> MasterManagementService ::: Method -> fetchAllCities ::: " + e.printStackTrace())
+        }
+
+        return responseMap
+    }
+
+    /**
+     * Method to City CRUD
+     *
+     * @param sCtx      ServiceContext
+     * @param params    Input params
+     * @return          Response map with appropriate status and message
+     */
+    Map cityCRUD(ServiceContext sCtx, Map params) {
+
+        Map responseMap = [(CodeConstants.RESPONSE_STATUS): false, (CodeConstants.RESPONSE_MESSAGE): "Something went wrong. Please try again."]
+
+        try {
+
+            City city = null
+            def savedData = null
+
+            switch (params.CRUD_MODE) {
+                case "ADD":
+                    city = new City()
+                    city.name = params.name
+                    city.createdBy = sCtx.id
+
+                    savedData = city.save(flush: true)
+
+                    if (savedData) {
+                        responseMap = [(CodeConstants.RESPONSE_STATUS): true, (CodeConstants.RESPONSE_MESSAGE): "City has been saved successfully."]
+                    }
+                    break
+
+                case "UPDATE":
+                    city = City.findById(params.id as Long)
+                    city.name = params.name
+                    city.updatedBy = sCtx.id
+
+                    savedData = city.save(flush: true)
+
+                    if (savedData) {
+                        responseMap = [(CodeConstants.RESPONSE_STATUS): true, (CodeConstants.RESPONSE_MESSAGE): "City has been updated successfully."]
+                    }
+                    break
+
+                case "DELETE":
+                    city = City.findById(params.id as Long)
+                    city.isDeleted = true
+                    city.updatedBy = sCtx.id
+
+                    savedData = city.save(flush: true)
+
+                    if (savedData) {
+                        responseMap = [(CodeConstants.RESPONSE_STATUS): true, (CodeConstants.RESPONSE_MESSAGE): "City has been deleted successfully."]
+                    }
+                    break
+            }
+        } catch (Exception e) {
+            log.info("Exception ::: Service -> MasterManagementService ::: Method -> cityCRUD ::: " + e.printStackTrace())
+        }
+
+        return responseMap
+    }
+
+    /**
+     * Method to fetch details of City by id
+     *
+     * @param sCtx      ServiceContext
+     * @param params    Input params
+     * @return          Response map with appropriate status and details
+     */
+    Map fetchCityDetailsById(ServiceContext sCtx, Map params) {
+
+        Map responseMap = [(CodeConstants.RESPONSE_STATUS): false, data: []]
+
+        try {
+
+            def cityData = City.findById(params.id as Long)
+
+            if (cityData) {
+                responseMap = [(CodeConstants.RESPONSE_STATUS): false, data: cityData.toMap()]
+            }
+
+        } catch (Exception e) {
+            log.info("Exception ::: Service -> MasterManagementService ::: Method -> fetchCityDetailsById ::: " + e.printStackTrace())
         }
 
         return responseMap

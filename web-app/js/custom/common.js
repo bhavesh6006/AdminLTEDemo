@@ -317,9 +317,14 @@ var ajaxURLs = {
     loginURL                                    : "login/auth",
     logoutURL                                   : "logout",
     homeURL                                     : "user/index",
+
     fetchAllVehicleTypes                        : "master/fetchAllVehicleTypes",
     vehicleTypeCRUD                             : "master/vehicleTypeCRUD",
-    fetchVehicleTypeDetailsById                 : "master/fetchVehicleTypeDetailsById"
+    fetchVehicleTypeDetailsById                 : "master/fetchVehicleTypeDetailsById",
+
+    fetchAllCities                              : "master/fetchAllCities",
+    cityCRUD                                    : "master/cityCRUD",
+    fetchCityDetailsById                        : "master/fetchCityDetailsById"
 };
 
 var codeConstant = {
