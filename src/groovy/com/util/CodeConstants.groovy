@@ -16,5 +16,4 @@ class CodeConstants {
      -------------------------------------------------------------------------------------*/
     static final String ROLE_SUPER_ADMIN        = 'ROLE_SUPER_ADMIN'
     static final String ROLE_ADMIN              = 'ROLE_ADMIN'
-    static final String ROLE_PROJECT_MANAGER    = 'ROLE_USER'
 }

@@ -111,7 +111,43 @@ class BootStrap {
                 }
             }
 
+            // Default admin users registration details list
+            def defaultAdminUsers = Holders.config.bootstrap.system.default.admins
+
+            defaultAdminUsers.each { adminUser ->
+
+                try {
+                    user = User.findByUsername(adminUser?.userName, [readonly: true])
+
+                    // If user doesn't exists then create new user
+                    if (!user) {
+                        // Create default super-admin user
+                        User admin = new User(
+                                username        : adminUser?.userName,
+                                password        : adminUser?.password,
+                                firstName       : adminUser?.firstName,
+                                lastName        : adminUser?.lastName,
+                                email           : adminUser?.email,
+                                mobileNumber    : adminUser?.mobileNumber,
+                                companyId       : Company.findById(2)?.id
+                        )
+
+                        admin.save(flush: true)
+
+                        // Assign role to super admin
+                        Role adminRole = Role.findByAuthority(CodeConstants.ROLE_ADMIN)
+                        UserRole adminUserRole = UserRole.get(admin.id, adminRole.id)
+                        if (!adminUserRole) {
+                            UserRole.create(admin, adminRole, true)
+                        }
+                    }
+                } catch (Exception e) {
+                    log.info("Exception ::: Class -> BootStrap ::: Method -> bootstrapDefaultCompanyAdminUser ::: " + e.printStackTrace())
+                }
+            }
+
         } catch (Exception e) {
+            log.info("Exception ::: Class -> BootStrap ::: Method -> bootstrapDefaultSystemSuperAdminUsers ::: " + e.printStackTrace())
         }
     }
 

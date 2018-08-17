@@ -45,11 +45,27 @@ bootstrap.system.default.superadmins = [
         ]
 ]
 
+// TODO : To add default admin user add details in the below list
+bootstrap.system.default.admins = [
+        [
+                userName     : 'admin',
+                password     : 'user123',
+                firstName    : 'Company',
+                lastName     : 'Admin',
+                email        : 'companyAdmin@mailinator.com',
+                mobileNumber : "9863254712"
+        ]
+]
+
 // TODO: To add default company add details in the below list
 bootstrap.system.default.companies = [
         [
-                companyName : 'Demo Company',
+                companyName : 'Demo - 1 Company',
                 address     : 'Pune'
+        ],
+        [
+                companyName : 'Demo - 2 Company',
+                address     : 'Mumbai'
         ]
 ]
 
